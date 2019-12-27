@@ -2,6 +2,8 @@
 // Table name : items
 
 const express = require('express');
+const exphbs = require('express-handlebars');
+const path = require('path');
 const mysql = require('mysql');
 
 //Create database connection
@@ -21,7 +23,15 @@ db.connect((err) => {
 });
 
 const app = express();
+let ans = '';
 
+app.set('views', path.join(__dirname, 'views'));
+app.engine('handlebars', exphbs({defaultLayout : 'main'}));
+app.set('view engine', 'handlebars');
+
+app.get('/', (req, res) => {
+    res.render('home', {ans : ans});
+});
 //Create DB using routing basically
 app.get('/createdb', (req, res) => {
     
@@ -70,8 +80,9 @@ app.get('/getitems', (req, res) => {
     let sql = 'SELECT * FROM items';                    
     let query = db.query(sql, (err, results) => {
         if(err) throw err;
+        ans = results;
         console.log(results);
-        res.send("Items fetched...");
+        res.send(results);
     });
 });
 
