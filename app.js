@@ -3,6 +3,7 @@
 
 const express = require('express');
 const exphbs = require('express-handlebars');
+const bodyParser = require('body-parser');
 const path = require('path');
 const mysql = require('mysql');
 
@@ -23,15 +24,14 @@ db.connect((err) => {
 });
 
 const app = express();
-let ans = '';
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended:true }));
 
 app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs({defaultLayout : 'main'}));
 app.set('view engine', 'handlebars');
 
-app.get('/', (req, res) => {
-    res.render('home', {ans : ans});
-});
 //Create DB using routing basically
 app.get('/createdb', (req, res) => {
     
@@ -64,6 +64,21 @@ app.get('/additem1', (req, res) => {
     });
 });
 
+//Dynamically adding items
+app.get('/add', (req, res) => {
+    res.render('additem');
+});
+
+app.post('/additem', (req, res) => {
+    let item = {title : req.body.name, price : req.body.price};
+    let sql = `INSERT INTO items SET ?`;
+    let query = db.query(sql, item, (err, result) => {
+        if(err) throw err;
+        console.log("Item inserted: " + item);
+        res.send("Item " + item + " inserted successfully!");
+    });
+});
+
 //Insert another item
 app.get('/additem2', (req, res) => {
     let item = {title : 'Soap', price : 40};
@@ -76,7 +91,7 @@ app.get('/additem2', (req, res) => {
 });
 
 //SELECT items
-app.get('/getitems', (req, res) => {
+/*app.get('/getitems', (req, res) => {
     let sql = 'SELECT * FROM items';                    
     let query = db.query(sql, (err, results) => {
         if(err) throw err;
@@ -93,6 +108,18 @@ app.get('/getitem/:id', (req, res) => {
         if(err) throw err;
         console.log(result);
         res.send("Item fetched...");
+    });
+});*/
+
+//SELECT all items and display them in the homepage
+app.get('/', (req, res) => {
+    let sql = 'SELECT * FROM items';
+    let ans = '';                    
+    let query = db.query(sql, (err, results) => {
+        if(err) throw err;
+        ans = results;
+        console.log(ans);
+        res.render('home', {val : ans});
     });
 });
 
