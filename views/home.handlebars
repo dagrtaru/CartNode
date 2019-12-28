@@ -1,0 +1,13 @@
+<h1>WELCOME TO SHOPPING CART</h1>
+
+<ul>
+    {{#each val}}
+        <li>
+            <p>Product Name:</p>
+            {{this.title}}
+            <br/>
+            <p>Product Price:</p>
+            {{this.price}}
+        </li>
+    {{/each}}
+</ul>
