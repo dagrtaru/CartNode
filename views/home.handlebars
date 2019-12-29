@@ -3,11 +3,21 @@
 <ul>
     {{#each val}}
         <li>
-            <p>Product Name:</p>
-            {{this.title}}
+            <p>Product Name: {{this.title}}</p>
+            <p>Product Price: {{this.price}}</p>
+            <span>Quantity:</span><input type="text" id="{{this.title}}"/>
+            <button onclick="calculate({{this.price}},{{this.title}});">Submit</button>
+            <p id="{{this.title}}_show"></p>
             <br/>
-            <p>Product Price:</p>
-            {{this.price}}
         </li>
     {{/each}}
 </ul>
+<script>
+    function calculate(price, obj)                    
+    {
+        var qty = document.getElementById(obj.id);
+        var output = document.getElementById(obj.id+"_show");
+        var total = price * qty;
+        output.innerHTML = total;
+    }
+</script>
