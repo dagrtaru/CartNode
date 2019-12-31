@@ -5,19 +5,31 @@
         <li>
             <p>Product Name: {{this.title}}</p>
             <p>Product Price: {{this.price}}</p>
-            <span>Quantity:</span><input type="text" id="{{this.title}}"/>
-            <button onclick="calculate({{this.price}},{{this.title}});">Submit</button>
-            <p id="{{this.title}}_show"></p>
+            <span>Quantity:</span><input type="text" id="{{this.items_id}}"/>
+            <button onclick="calculate({{this.price}},{{this.items_id}});">Submit</button>
+            <p id="{{this.items_id}}_show"></p>
             <br/>
         </li>
     {{/each}}
 </ul>
+<button onclick="checkout();">Payment for checkout:</button>
+<p id="ultimate"></p>
 <script>
-    function calculate(price, obj)                    
+    let net = 0;
+    function calculate(price, n)                    
     {
-        var qty = document.getElementById(obj.id);
-        var output = document.getElementById(obj.id+"_show");
-        var total = price * qty;
+        var qty = document.getElementById(n);
+        var output = document.getElementById(n+"_show");
+        if(qty == "undefined"){
+            qty = 0;
+        }
+        var total = price * parseInt(qty.value);
+        net += total;
         output.innerHTML = total;
+    }
+    function checkout()
+    {
+        var ult = document.getElementById("ultimate");
+        ult.innerHTML = net;
     }
 </script>
